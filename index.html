@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sidnei Escudero Advogados — Feed Jurídico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0e0608;
+      --ink: #e8c96a;
+      --ink2: #b89840;
+      --muted: #6b4a40;
+      --accent: #b89840;
+      --wine: #4a0e18;
+      --wine2: #6b1828;
+      --wine3: #3a0a12;
+      --border: #2a1018;
+      --card: #130608;
+      --tag-bg: #1a080e;
+    }
+
+    /* Grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at top left, rgba(74,14,24,0.4) 0%, transparent 55%),
+        radial-gradient(ellipse at bottom right, rgba(58,10,18,0.3) 0%, transparent 55%);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+
+    .masthead-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .masthead-logo img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--ink);
+      background: white;
+      padding: 4px;
+    }
+    
+    /* ── Masthead ── */
+    .masthead {
+      border-bottom: 1px solid #6b1828;
+      padding: 0 clamp(16px, 5vw, 80px);
+      background: linear-gradient(180deg, #0a0406 0%, #130608 60%, #0e0608 100%);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 40px rgba(74,14,24,0.3);
+    }
+    .masthead-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 8px;
+      border-bottom: 1px solid rgba(107,24,40,0.4);
+    }
+    .date-line {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .update-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #b89840;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .update-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #b89840;
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .masthead-title {
+      text-align: center;
+      padding: 16px 0 12px;
+    }
+    .site-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1;
+      background: linear-gradient(135deg, #e8c96a 0%, #b89840 50%, #e8c96a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .site-tagline {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(107,24,40,0.4);
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      padding: 12px clamp(16px, 5vw, 80px);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: #0a0406;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--ink2);
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--ink); }
+    .filter-btn.active {
+      background: linear-gradient(135deg, #4a0e18, #6b1828);
+      color: #e8c96a;
+      border-color: #b89840;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(74,14,24,0.6);
+    }
+    .filter-btn .count {
+      font-size: 10px;
+      opacity: 0.65;
+    }
+
+    /* ── Main layout ── */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px clamp(16px, 5vw, 40px);
+    }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .loading-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--ink);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: var(--muted); font-size: 14px; }
+
+    /* ── Section header ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #6b1828;
+    }
+    .section-head .section-icon { font-size: 14px; }
+    .section-head h2 {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .section-head .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Hero grid (destaques) ── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 40px;
+      background: var(--border);
+      border: 2px solid var(--wine2);
+      box-shadow: 0 8px 40px rgba(74,14,24,0.4);
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    .hero-card {
+      background: var(--card);
+      overflow: hidden;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .hero-card:hover { opacity: 0.88; }
+
+    .hero-card.main-card .img-wrap { height: 220px; }
+    .hero-card:not(.main-card) .img-wrap { height: 130px; }
+    .img-wrap {
+      overflow: hidden;
+      background: var(--tag-bg);
+      position: relative;
+    }
+    .img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .hero-card:hover .img-wrap img { transform: scale(1.03); }
+    .img-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: linear-gradient(135deg, var(--tag-bg), var(--border));
+    }
+
+    .hero-body { padding: 14px 16px 16px; }
+    .cat-pill {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .hero-card.main-card .hero-title { font-size: clamp(16px, 2.5vw, 22px); }
+    .hero-card:not(.main-card) .hero-title { font-size: 14px; }
+    .hero-meta {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+    .hero-desc {
+      font-size: 13px;
+      color: var(--ink2);
+      margin-top: 6px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Article list ── */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .article-card {
+      background: var(--card);
+      padding: 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .article-card:hover { background: #faf8f5; }
+
+    .article-cat {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+    .article-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .article-desc {
+      font-size: 12px;
+      color: var(--ink2);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--muted);
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .source-tag {
+      background: var(--tag-bg);
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    /* ── Error ── */
+    .error-box {
+      background: #fff8f6;
+      border: 1px solid #f4c5b8;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .error-box p { font-size: 13px; color: var(--ink2); margin-bottom: 8px; }
+    .error-box .note { font-size: 11px; color: var(--muted); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #6b1828;
+      text-align: center;
+      padding: 24px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      background: #0a0406;
+    }
+    footer strong { color: var(--ink); font-family: 'Playfair Display', serif; }
+
+    /* ── Animations ── */
+    .fade-in {
+      animation: fadeUp 0.4s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Masthead -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="date-line" id="dateDisplay"></div>
+    <div class="update-badge">Atualização Diária</div>
+  </div>
+  <div class="masthead-title">
+    <div class="site-name">Sidnei Escudero Advogados</div>
+    <div class="site-tagline">Sigilo · Ética · Profissionalismo<br><span style="font-size:11px;letter-spacing:0.3px;opacity:0.75;">Direito que você não conhece, é direito que você perde.</span></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-num" id="statArticles">—</div>
+      <div class="stat-label">Artigos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statCats">7</div>
+      <div class="stat-label">Categorias</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">70+</div>
+      <div class="stat-label">Fontes</div>
+    </div>
+  </div>
+</header>
+
+<!-- Filter bar -->
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-cat="all">Todos <span class="count" id="countAll"></span></button>
+  <button class="filter-btn" data-cat="Jurídico">⚖️ Jurídico <span class="count" id="countJuridico"></span></button>
+  <button class="filter-btn" data-cat="Agronegócio">🌾 Agronegócio <span class="count" id="countAgro"></span></button>
+  <button class="filter-btn" data-cat="Pecuária">🐄 Pecuária <span class="count" id="countPecuaria"></span></button>
+  <button class="filter-btn" data-cat="Tech Agro">🤖 Tech Agro <span class="count" id="countTech"></span></button>
+  <button class="filter-btn" data-cat="Agro Internacional">🌍 Agro Internacional <span class="count" id="countAgroInt"></span></button>
+  <button class="filter-btn" data-cat="Política">🏛️ Política <span class="count" id="countPolitica"></span></button>
+  <button class="filter-btn" data-cat="Inovação">🔬 Inovação <span class="count" id="countInovacao"></span></button>
+</div>
+
+<!-- Main content -->
+<main class="main" id="mainContent">
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    <p>Buscando as últimas notícias...</p>
+  </div>
+</main>
+
+<footer>
+  <strong>Sidnei Escudero Advogados</strong> — Sigilo · Ética · Profissionalismo<br><span style="font-size:11px;letter-spacing:0.3px;opacity:0.75;">Direito que você não conhece, é direito que você perde.</span> · Curadoria que atualiza todo dia
+</footer>
+
+<script>
+// ── CONFIG — Sidnei Escudero Advogados · Feed Máximo ────────────
+const FEEDS = [
+
+  // ⚖️ Jurídico
+  { url: "https://www.conjur.com.br/rss.xml", cat: "Jurídico", name: "Conjur" },
+  { url: "https://www.jota.info/feed", cat: "Jurídico", name: "JOTA" },
+  { url: "https://www.migalhas.com.br/rss/quentes", cat: "Jurídico", name: "Migalhas" },
+  { url: "https://portal.stf.jus.br/rss/noticia.asp", cat: "Jurídico", name: "STF" },
+  { url: "https://www.stj.jus.br/sites/portalp/Comunicacao/Noticias/Noticias-RSS", cat: "Jurídico", name: "STJ" },
+  { url: "https://www.cnj.jus.br/feed/", cat: "Jurídico", name: "CNJ" },
+  { url: "https://legis.senado.leg.br/rss/noticias.xml", cat: "Jurídico", name: "Senado Federal" },
+  { url: "https://www.camara.leg.br/rss/noticias/", cat: "Jurídico", name: "Câmara dos Deputados" },
+  { url: "https://agenciabrasil.ebc.com.br/rss/justica/feed.xml", cat: "Jurídico", name: "Agência Brasil Justiça" },
+
+  // 🌾 Agronegócio
+  { url: "https://www.noticiasagricolas.com.br/rss/noticias.xml", cat: "Agronegócio", name: "Notícias Agrícolas" },
+  { url: "https://www.agrolink.com.br/rss/noticias.xml", cat: "Agronegócio", name: "Agrolink" },
+  { url: "https://feeds.feedburner.com/canalrural", cat: "Agronegócio", name: "Canal Rural" },
+  { url: "https://www.dinheirorural.com.br/feed/", cat: "Agronegócio", name: "Dinheiro Rural" },
+  { url: "https://agenciabrasil.ebc.com.br/rss/agronegocio/feed.xml", cat: "Agronegócio", name: "Agência Brasil Agro" },
+  { url: "https://www.grupocultivar.com.br/feed", cat: "Agronegócio", name: "Grupo Cultivar" },
+  { url: "https://www.portaldoagronegocio.com.br/rss", cat: "Agronegócio", name: "Portal do Agronegócio" },
+  { url: "https://www.safras.com.br/rss/", cat: "Agronegócio", name: "Safras & Mercado" },
+  { url: "https://www.globorural.com.br/rss", cat: "Agronegócio", name: "Globo Rural" },
+  { url: "https://camponegocios.com.br/feed/", cat: "Agronegócio", name: "Campo & Negócio" },
+
+  // 🐄 Pecuária
+  { url: "https://www.beefpoint.com.br/feed/", cat: "Pecuária", name: "BeefPoint" },
+  { url: "https://www.milkpoint.com.br/feed/", cat: "Pecuária", name: "MilkPoint" },
+  { url: "https://www.scotconsultoria.com.br/rss/noticias.xml", cat: "Pecuária", name: "Scot Consultoria" },
+  { url: "https://www.abiec.com.br/feed/", cat: "Pecuária", name: "ABIEC" },
+  { url: "https://www.canaldeboi.com.br/feed/", cat: "Pecuária", name: "Canal do Boi" },
+  { url: "https://www.dbo.com.br/rss/noticias.xml", cat: "Pecuária", name: "DBO Pecuária" },
+  { url: "https://www.boigordo.com.br/rss/", cat: "Pecuária", name: "Boi Gordo" },
+  { url: "https://www.ruralbr.com.br/rss/pecuaria.xml", cat: "Pecuária", name: "Rural BR" },
+
+  // 🤖 Tech Agro
+  { url: "https://www.agrodigital.com.br/feed/", cat: "Tech Agro", name: "AgroDigital" },
+  { url: "https://www.startupagro.com.br/feed/", cat: "Tech Agro", name: "StartupAgro" },
+  { url: "https://www.inovacaoagricola.com.br/feed/", cat: "Tech Agro", name: "Inovação Agrícola" },
+  { url: "https://www.agfundernews.com/feed", cat: "Tech Agro", name: "AgFunder News" },
+  { url: "https://www.precisionag.com/feed/", cat: "Tech Agro", name: "Precision Ag" },
+  { url: "https://agritechtomorrow.com/feed/", cat: "Tech Agro", name: "AgriTech Tomorrow" },
+  { url: "https://thespoon.tech/feed/", cat: "Tech Agro", name: "The Spoon FoodTech" },
+  { url: "https://www.foodnavigator.com/rss/editorial.rss", cat: "Tech Agro", name: "Food Navigator" },
+
+  // 🌍 Agro Internacional
+  { url: "https://www.reuters.com/rssFeed/businessNews", cat: "Agro Internacional", name: "Reuters" },
+  { url: "https://feeds.bloomberg.com/markets/news.rss", cat: "Agro Internacional", name: "Bloomberg" },
+  { url: "https://www.agweb.com/rss/news", cat: "Agro Internacional", name: "AgWeb" },
+  { url: "https://www.farmprogress.com/rss.xml", cat: "Agro Internacional", name: "Farm Progress" },
+  { url: "https://www.cattlenetwork.com/rss/all", cat: "Agro Internacional", name: "Cattle Network" },
+  { url: "https://www.worldgrain.com/rss/all", cat: "Agro Internacional", name: "World Grain" },
+  { url: "https://www.feedstuffs.com/rss/all", cat: "Agro Internacional", name: "Feedstuffs" },
+  { url: "https://www.meatpoultry.com/rss/all", cat: "Agro Internacional", name: "Meat & Poultry" },
+  { url: "https://www.meattradenewsdaily.co.uk/feed/", cat: "Agro Internacional", name: "Meat Trade News" },
+  { url: "https://www.beefcentral.com/feed/", cat: "Agro Internacional", name: "Beef Central" },
+  { url: "https://www.investing.com/rss/news_commodities.rss", cat: "Agro Internacional", name: "Investing Commodities" },
+  { url: "https://www.usda.gov/rss/latest-releases.xml", cat: "Agro Internacional", name: "USDA" },
+  { url: "https://www.fao.org/news/rss-feed/en/", cat: "Agro Internacional", name: "FAO - ONU" },
+
+  // 🏛️ Política
+  { url: "https://agenciabrasil.ebc.com.br/rss/politica/feed.xml", cat: "Política", name: "Agência Brasil" },
+  { url: "https://www.poder360.com.br/feed/", cat: "Política", name: "Poder360" },
+  { url: "https://exame.com/feed/", cat: "Política", name: "Exame" },
+  { url: "https://feeds.feedburner.com/UOLNoticias", cat: "Política", name: "UOL Notícias" },
+  { url: "https://rss.cnnbrasil.com.br/feed/", cat: "Política", name: "CNN Brasil" },
+  { url: "https://www.bbc.com/portuguese/index.xml", cat: "Política", name: "BBC Brasil" },
+  { url: "https://www.reuters.com/rssFeed/worldNews", cat: "Política", name: "Reuters World" },
+  { url: "https://feeds.theguardian.com/theguardian/world/rss", cat: "Política", name: "The Guardian" },
+  { url: "https://www.aljazeera.com/xml/rss/all.xml", cat: "Política", name: "Al Jazeera" },
+
+  // 🔬 Inovação
+  { url: "https://www.embrapa.br/rss", cat: "Inovação", name: "Embrapa" },
+  { url: "https://www.sciencedaily.com/rss/plants_animals/agriculture.xml", cat: "Inovação", name: "Science Daily Agro" },
+  { url: "https://www.nature.com/subjects/agriculture.rss", cat: "Inovação", name: "Nature Agriculture" },
+  { url: "https://feeds.feedburner.com/TechCrunch", cat: "Inovação", name: "TechCrunch" },
+  { url: "https://feeds.technologyreview.com/MIT-Technology-Review", cat: "Inovação", name: "MIT Tech Review" },
+  { url: "https://www.wired.com/feed/rss", cat: "Inovação", name: "Wired" },
+  { url: "https://www.carbonbrief.org/feed/", cat: "Inovação", name: "Carbon Brief" },
+  { url: "https://www.climate.gov/news-features/feed", cat: "Inovação", name: "NOAA Climate" },
+  { url: "https://www.fooddive.com/feeds/news/", cat: "Inovação", name: "Food Dive" },
+
+];
+
+const CAT_EMOJI = {
+  "Jurídico": "⚖️",
+  "Agronegócio": "🌾",
+  "Pecuária": "🐄",
+  "Tech Agro": "🤖",
+  "Agro Internacional": "🌍",
+  "Política": "🏛️",
+  "Inovação": "🔬"
+};
+const IMG_FALLBACK = {
+  "Jurídico": "⚖️",
+  "Agronegócio": "🌾",
+  "Pecuária": "🐄",
+  "Tech Agro": "🤖",
+  "Agro Internacional": "🌍",
+  "Política": "🏛️",
+  "Inovação": "🔬"
+};
+
+let allArticles = [];
+let activeFilter = "all";
+
+// ── Date ──────────────────────────────────────────
+const now = new Date();
+document.getElementById("dateDisplay").textContent =
+  now.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+// ── Fetch all feeds ───────────────────────────────
+async function fetchFeed(feed) {
+  const proxies = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(feed.url)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(feed.url)}`,
+  ];
+
+  for (const proxyUrl of proxies) {
+    try {
+      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      let text = "";
+      if (proxyUrl.includes("allorigins")) {
+        const data = await res.json();
+        text = data.contents || "";
+      } else {
+        text = await res.text();
+      }
+      if (!text) continue;
+
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, "text/xml");
+      const items = Array.from(xml.querySelectorAll("item, entry")).slice(0, 8);
+      if (!items.length) continue;
+
+      return items.map(item => {
+        const get = (tag) => item.querySelector(tag)?.textContent?.trim() || "";
+        const getAttr = (tag, attr) => item.querySelector(tag)?.getAttribute(attr) || "";
+        const imgMatch = get("description").match(/<img[^>]+src=["']([^"']+)["']/i);
+        return {
+          title: get("title"),
+          link: get("link") || getAttr("link", "href"),
+          desc: stripHtml(get("description") || get("summary") || get("content")),
+          image: getAttr("enclosure", "url") || imgMatch?.[1] || "",
+          date: new Date(get("pubDate") || get("published") || Date.now()),
+          source: feed.name,
+          cat: feed.cat,
+        };
+      }).filter(a => a.title && a.link);
+    } catch { continue; }
+  }
+  return [];
+}
+
+async function loadAll() {
+  const results = await Promise.allSettled(FEEDS.map(fetchFeed));
+  allArticles = results
+    .flatMap(r => r.status === "fulfilled" ? r.value : [])
+    .sort((a, b) => b.date - a.date);
+
+  if (allArticles.length === 0) {
+    showError();
+    return;
+  }
+
+  updateCounts();
+  renderPage();
+}
+
+function showError() {
+  document.getElementById("loadingState").innerHTML = `
+    <div class="error-box">
+      <p>⚠️ Não foi possível carregar os feeds RSS agora.</p>
+      <p class="note">Isso pode ocorrer por bloqueio de CORS. Para uso real, hospede em um servidor ou use um proxy RSS próprio.</p>
+      <p class="note" style="margin-top:8px;">Veja abaixo como publicar no GitHub Pages gratuitamente.</p>
+    </div>
+    ${demoArticles()}
+  `;
+  document.getElementById("statArticles").textContent = "Demo";
+}
+
+// ── Demo fallback ─────────────────────────────────
+function demoArticles() {
+  const demos = [
+    { title: "OpenAI lança novo modelo GPT-5 com raciocínio avançado", cat: "Tech & IA", source: "TechCrunch", desc: "O novo modelo promete superar benchmarks anteriores em tarefas complexas de raciocínio e codificação.", date: new Date(), link: "#", image: "" },
+    { title: "Como usar IA para triplicar o alcance orgânico no Instagram", cat: "Marketing", source: "Neil Patel", desc: "Estratégias práticas para usar ferramentas de inteligência artificial na criação de conteúdo.", date: new Date(), link: "#", image: "" },
+    { title: "Startups brasileiras captam R$ 2,4 bilhões no primeiro trimestre", cat: "Negócios", source: "Entrepreneur", desc: "Setor de fintechs lidera rodadas de investimento com crescimento de 40% em relação ao ano anterior.", date: new Date(), link: "#", image: "" },
+    { title: "As 10 ferramentas de produtividade que toda pessoa criativa precisa", cat: "Lifestyle", source: "Product Hunt", desc: "Uma seleção das melhores ferramentas para organizar projetos, automatizar tarefas e criar mais.", date: new Date(), link: "#", image: "" },
+    { title: "Meta anuncia integração de IA em todas as plataformas do grupo", cat: "Tech & IA", source: "The Verge", desc: "Facebook, Instagram e WhatsApp receberão recursos de IA generativa nas próximas semanas.", date: new Date(), link: "#", image: "" },
+    { title: "Guia definitivo de SEO para 2025: o que mudou com a IA", cat: "Marketing", source: "HubSpot", desc: "Com o Google usando IA para gerar respostas, a estratégia de SEO precisa evoluir rapidamente.", date: new Date(), link: "#", image: "" },
+  ];
+  allArticles = demos;
+  updateCounts();
+  return buildContent(demos);
+}
+
+// ── Counts ───────────────────────────────────────
+function updateCounts() {
+  const total = allArticles.length;
+  document.getElementById("statArticles").textContent = total;
+  document.getElementById("countAll").textContent = total;
+  ["Tech & IA", "Marketing", "Negócios", "Lifestyle"].forEach(cat => {
+    const key = cat.replace(" & ", "").replace("é", "e").replace("ó", "o");
+    const id = `count${key.charAt(0).toUpperCase() + key.slice(1).split(" ")[0]}`;
+    const el = document.getElementById(id);
+    if (el) el.textContent = allArticles.filter(a => a.cat === cat).length;
+  });
+}
+
+// ── Render ────────────────────────────────────────
+function renderPage() {
+  const filtered = activeFilter === "all"
+    ? allArticles
+    : allArticles.filter(a => a.cat === activeFilter);
+
+  document.getElementById("mainContent").innerHTML = buildContent(filtered);
+  document.getElementById("loadingState")?.remove();
+  document.querySelectorAll(".fade-in").forEach((el, i) => {
+    el.style.animationDelay = `${i * 0.04}s`;
+  });
+}
+
+function buildContent(articles) {
+  if (!articles.length) return `<div class="error-box"><p>Nenhum artigo nesta categoria ainda.</p></div>`;
+
+  const highlights = articles.slice(0, 3);
+  const rest = articles.slice(3);
+
+  let html = `
+    <div class="section-head fade-in">
+      <span class="section-icon">🔥</span>
+      <h2>Destaques</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="hero-grid fade-in">
+      ${highlights.map((a, i) => heroCard(a, i === 0)).join("")}
+    </div>`;
+
+  if (rest.length) {
+    html += `
+      <div class="section-head fade-in">
+        <span class="section-icon">📰</span>
+        <h2>Mais Notícias</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="articles-grid fade-in">
+        ${rest.map(articleCard).join("")}
+      </div>`;
+  }
+
+  return html;
+}
+
+function heroCard(a, isMain) {
+  const img = a.image
+    ? `<img src="${a.image}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : "";
+  const fallback = `<div class="img-placeholder" ${a.image ? 'style="display:none"' : ""}>${IMG_FALLBACK[a.cat] || "📰"}</div>`;
+
+  return `
+    <a class="hero-card ${isMain ? "main-card" : ""}" href="${a.link}" target="_blank" rel="noopener">
+      <div class="img-wrap">${img}${fallback}</div>
+      <div class="hero-body">
+        <div class="cat-pill">${CAT_EMOJI[a.cat] || ""} ${a.cat}</div>
+        <div class="hero-title">${escHtml(a.title)}</div>
+        ${isMain && a.desc ? `<div class="hero-desc">${escHtml(a.desc)}</div>` : ""}
+        <div class="hero-meta">${a.source} · ${timeAgo(a.date)}</div>
+      </div>
+    </a>`;
+}
+
+function articleCard(a) {
+  return `
+    <a class="article-card" href="${a.link}" target="_blank" rel="noopener">
+      <div class="article-cat">${CAT_EMOJI[a.cat] || ""} ${a.cat}</div>
+      <div class="article-title">${escHtml(a.title)}</div>
+      ${a.desc ? `<div class="article-desc">${escHtml(a.desc)}</div>` : ""}
+      <div class="article-meta">
+        <span class="source-tag">${a.source}</span>
+        <span>${timeAgo(a.date)}</span>
+      </div>
+    </a>`;
+}
+
+// ── Filter ────────────────────────────────────────
+document.getElementById("filterBar").addEventListener("click", e => {
+  const btn = e.target.closest(".filter-btn");
+  if (!btn) return;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  activeFilter = btn.dataset.cat;
+  document.getElementById("mainContent").innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Filtrando...</p></div>';
+  setTimeout(renderPage, 100);
+});
+
+// ── Helpers ───────────────────────────────────────
+function stripHtml(html) {
+  return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim();
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function timeAgo(date) {
+  const diff = (Date.now() - date.getTime()) / 1000;
+  if (diff < 3600) return `${Math.floor(diff/60)}min atrás`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h atrás`;
+  return `${Math.floor(diff/86400)}d atrás`;
+}
+
+// ── Start ─────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>
