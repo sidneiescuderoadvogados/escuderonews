@@ -61,6 +61,55 @@
       padding: 4px;
     }
     
+
+    /* ── Weather Widget ── */
+    .weather-bar {
+      background: rgba(74,14,24,0.3);
+      border-bottom: 1px solid var(--border);
+      padding: 8px clamp(16px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .weather-city {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--ink2);
+    }
+    .weather-city-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .weather-temp {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .weather-desc {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .weather-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .weather-divider {
+      width: 1px;
+      height: 30px;
+      background: var(--border);
+    }
+
     /* ── Masthead ── */
     .masthead {
       border-bottom: 1px solid #6b1828;
@@ -437,11 +486,11 @@
       <div class="stat-label">Artigos</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num" id="statCats">7</div>
+      <div class="stat-num" id="statCats">10</div>
       <div class="stat-label">Categorias</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">70+</div>
+      <div class="stat-num">90+</div>
       <div class="stat-label">Fontes</div>
     </div>
   </div>
@@ -451,11 +500,14 @@
 <div class="filter-bar" id="filterBar">
   <button class="filter-btn active" data-cat="all">Todos <span class="count" id="countAll"></span></button>
   <button class="filter-btn" data-cat="Jurídico">⚖️ Jurídico <span class="count" id="countJuridico"></span></button>
+  <button class="filter-btn" data-cat="Imobiliário">🏠 Imobiliário <span class="count" id="countImovel"></span></button>
   <button class="filter-btn" data-cat="Agronegócio">🌾 Agronegócio <span class="count" id="countAgro"></span></button>
   <button class="filter-btn" data-cat="Pecuária">🐄 Pecuária <span class="count" id="countPecuaria"></span></button>
   <button class="filter-btn" data-cat="Tech Agro">🤖 Tech Agro <span class="count" id="countTech"></span></button>
   <button class="filter-btn" data-cat="Agro Internacional">🌍 Agro Internacional <span class="count" id="countAgroInt"></span></button>
   <button class="filter-btn" data-cat="Política">🏛️ Política <span class="count" id="countPolitica"></span></button>
+  <button class="filter-btn" data-cat="Mercado Financeiro">💰 Mercado Financeiro <span class="count" id="countFinanceiro"></span></button>
+  <button class="filter-btn" data-cat="Criptoativos">₿ Criptoativos <span class="count" id="countCripto"></span></button>
   <button class="filter-btn" data-cat="Inovação">🔬 Inovação <span class="count" id="countInovacao"></span></button>
 </div>
 
@@ -555,6 +607,40 @@ const FEEDS = [
   { url: "https://www.climate.gov/news-features/feed", cat: "Inovação", name: "NOAA Climate" },
   { url: "https://www.fooddive.com/feeds/news/", cat: "Inovação", name: "Food Dive" },
 
+  // 🏠 Imobiliário & Direito Civil
+  { url: "https://www.aabic.org.br/feed/", cat: "Imobiliário", name: "AABIC" },
+  { url: "https://www.secovi.com.br/rss/noticias.xml", cat: "Imobiliário", name: "Secovi" },
+  { url: "https://www.imovelweb.com.br/noticias/feed/", cat: "Imobiliário", name: "ImovelWeb" },
+  { url: "https://www.vivareal.com.br/noticias/feed/", cat: "Imobiliário", name: "VivaReal" },
+  { url: "https://einvestidor.estadao.com.br/feed/imoveis", cat: "Imobiliário", name: "E-Investidor Imóveis" },
+  { url: "https://valoreconomico.com.br/rss/imoveis.xml", cat: "Imobiliário", name: "Valor Imóveis" },
+  { url: "https://www.globalpropertyguide.com/feed", cat: "Imobiliário", name: "Global Property Guide" },
+  { url: "https://www.realtor.com/news/feed/", cat: "Imobiliário", name: "Realtor.com" },
+
+  // 💰 Mercado Financeiro Nacional
+  { url: "https://www.infomoney.com.br/feed/", cat: "Mercado Financeiro", name: "InfoMoney" },
+  { url: "https://einvestidor.estadao.com.br/feed/", cat: "Mercado Financeiro", name: "E-Investidor" },
+  { url: "https://valoreconomico.globo.com/rss/financas.xml", cat: "Mercado Financeiro", name: "Valor Econômico" },
+  { url: "https://exame.com/invest/feed/", cat: "Mercado Financeiro", name: "Exame Invest" },
+  { url: "https://www.moneytimes.com.br/feed/", cat: "Mercado Financeiro", name: "Money Times" },
+  { url: "https://braziljournal.com/feed/", cat: "Mercado Financeiro", name: "Brazil Journal" },
+  // Internacional
+  { url: "https://feeds.bloomberg.com/markets/news.rss", cat: "Mercado Financeiro", name: "Bloomberg Markets" },
+  { url: "https://www.wsj.com/xml/rss/3_7031.xml", cat: "Mercado Financeiro", name: "Wall Street Journal" },
+  { url: "https://www.ft.com/?format=rss", cat: "Mercado Financeiro", name: "Financial Times" },
+  { url: "https://feeds.a.dj.com/rss/RSSMarketsMain.xml", cat: "Mercado Financeiro", name: "Dow Jones" },
+  { url: "https://www.investing.com/rss/news.rss", cat: "Mercado Financeiro", name: "Investing.com" },
+
+  // ₿ Criptoativos Nacional & Internacional
+  { url: "https://livecoins.com.br/feed/", cat: "Criptoativos", name: "LiveCoins" },
+  { url: "https://www.mercadobitcoin.com.br/blog/feed/", cat: "Criptoativos", name: "Mercado Bitcoin" },
+  { url: "https://foxbit.com.br/blog/feed/", cat: "Criptoativos", name: "Foxbit" },
+  { url: "https://cointelegraph.com.br/feed", cat: "Criptoativos", name: "CoinTelegraph BR" },
+  { url: "https://coindesk.com/arc/outboundfeeds/rss/", cat: "Criptoativos", name: "CoinDesk" },
+  { url: "https://cointelegraph.com/rss", cat: "Criptoativos", name: "CoinTelegraph" },
+  { url: "https://decrypt.co/feed", cat: "Criptoativos", name: "Decrypt" },
+  { url: "https://www.theblock.co/rss.xml", cat: "Criptoativos", name: "The Block" },
+
 ];
 
 const CAT_EMOJI = {
@@ -564,7 +650,10 @@ const CAT_EMOJI = {
   "Tech Agro": "🤖",
   "Agro Internacional": "🌍",
   "Política": "🏛️",
-  "Inovação": "🔬"
+  "Inovação": "🔬",
+  "Imobiliário": "🏠",
+  "Mercado Financeiro": "💰",
+  "Criptoativos": "₿"
 };
 const IMG_FALLBACK = {
   "Jurídico": "⚖️",
@@ -573,7 +662,10 @@ const IMG_FALLBACK = {
   "Tech Agro": "🤖",
   "Agro Internacional": "🌍",
   "Política": "🏛️",
-  "Inovação": "🔬"
+  "Inovação": "🔬",
+  "Imobiliário": "🏠",
+  "Mercado Financeiro": "💰",
+  "Criptoativos": "₿"
 };
 
 let allArticles = [];
